@@ -1,0 +1,47 @@
+{
+	"info": {
+		"_postman_id": "8a43506b-cf43-40d9-8fe3-fd3f32658ca8",
+		"name": "bcp_challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Creacion de moneda de cambio con valor de cambio a dolares",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"label\":\"PEN\",\r\n\"amountChange\":0.2777\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/api/currency/add",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"currency",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "healthy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
