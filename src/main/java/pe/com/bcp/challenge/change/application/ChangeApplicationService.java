@@ -16,8 +16,15 @@ public class ChangeApplicationService {
   public Single<BigDecimal> getChange(String currencyLabelFrom,
       BigDecimal amount, String currencyLabelTo) {
     log.info("Into getChange()");
+    return Single.fromCallable(() -> { 
+      Notification notification = this.changeValidate(currencyLabelFrom, amount,
+          currencyLabelTo);
+      if(notification.hasErrors()) {
+        throw new IllegalArgumentException(notification.errorMessage());
+      }
+      return null;
+    });
 
-    return null;
   }
 
   private Notification changeValidate(String currencyLabelFrom,
@@ -31,7 +38,7 @@ public class ChangeApplicationService {
       notification.addError("Label \ncurrency to\" is not defined");
     }
     if (Objects.isNull(amount)) {
-      notification.addError("Label \ncurrency to\" is not defined");
+      notification.addError("Label \n amount \" is not defined");
     }
 
     return notification;
