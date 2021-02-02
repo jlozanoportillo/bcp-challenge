@@ -2,7 +2,8 @@ package pe.com.bcp.challenge.change.infrastructure.jdbc.repository;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -58,13 +59,13 @@ public class CurrencyJdbcRepository implements CurrencyRepository {
   public Currency findByLabel(String label) {
     log.info("Into findByLabel(String label)");
     String sql = "select * from currency where label = ? ";
-//    Currency currencyDb = jdbcTemplate.queryForObject(sql,
-//        new CurrencyMapper(), 
-//        new Object[] { label });
-    
-     @SuppressWarnings("deprecation")
-    Currency sasasa = jdbcTemplate.queryForObject(sql, new Object[]{label}, new CurrencyMapper());
-     return sasasa;
+
+    try {
+      return jdbcTemplate.queryForObject(sql, new Object[] { label }, new CurrencyMapper()); 
+    } catch (EmptyResultDataAccessException e) {
+      return null;
+    }
+
   }
 
 }

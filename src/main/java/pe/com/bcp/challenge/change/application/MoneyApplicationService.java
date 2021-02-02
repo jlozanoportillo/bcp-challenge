@@ -27,7 +27,10 @@ public class MoneyApplicationService {
       if (notification.hasErrors()) {
         throw new IllegalArgumentException(notification.errorMessage());
       }
-      return currencyRepository.save(new Currency()); 
+      Currency currency = new Currency();
+      currency.setLabel(currencyDto.getLabel());
+      currency.setChageAmount(currencyDto.getAmountChange());
+      return currencyRepository.save(currency); 
     });
   }
 
