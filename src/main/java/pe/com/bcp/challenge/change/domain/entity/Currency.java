@@ -1,6 +1,7 @@
 package pe.com.bcp.challenge.change.domain.entity;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +15,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class Currency {
-  
+
   private Integer id;
-  
+
   private String label;
-  
+
   private BigDecimal chageAmount;
 
+  public BigDecimal changeAmount(Currency currencyDestiny, BigDecimal amount) {
+    BigDecimal amountChange = (this.chageAmount.divide(currencyDestiny.getChageAmount(), RoundingMode.HALF_UP) );
+    return amountChange.multiply(amount);
+  }
 }
