@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import pe.com.bcp.challenge.change.application.MoneyApplicationService;
 import pe.com.bcp.challenge.change.application.dto.CurrencyDto;
+import pe.com.bcp.challenge.change.application.dto.UpdateRequest;
 import pe.com.bcp.challenge.common.api.controller.ResponseHandler;
 
 @Slf4j
@@ -34,22 +36,31 @@ public class MoneyController {
   }
 
   @SuppressWarnings("deprecation")
-  @PostMapping(
-      value = "/add", 
-      consumes = MediaType.APPLICATION_JSON_VALUE, 
-      produces = {
-          MediaType.APPLICATION_STREAM_JSON_VALUE,
-          MediaType.APPLICATION_JSON_VALUE}
-      )
+  @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {
+      MediaType.APPLICATION_STREAM_JSON_VALUE,
+      MediaType.APPLICATION_JSON_VALUE })
   public Single<ResponseEntity<Object>> createCurrency(
-      @RequestBody CurrencyDto currencyDto) throws Exception {
+      @RequestBody CurrencyDto currencyDto) throws Exception  {
     log.info("Into createCurrency()");
 
     return moneyApplicationService.create(currencyDto)
-        .map(res -> responseHandler.getResponse(res, HttpStatus.OK) )
-        .onErrorReturn(r->   responseHandler.getAppCustomErrorResponse(r.getMessage() ) )
+        .map(res -> responseHandler.getResponse(res, HttpStatus.OK))
+        .onErrorReturn(r -> responseHandler.getAppCustomErrorResponse(r.getMessage()))
         .subscribeOn(Schedulers.io());
-         
   }
+  
+  @SuppressWarnings("deprecation")
+  @PutMapping(
+      value = "/{labelCurrency}",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = {MediaType.APPLICATION_STREAM_JSON_VALUE,MediaType.APPLICATION_JSON_VALUE}
+      )
+  public Single<ResponseEntity<Object>> update(@RequestBody UpdateRequest request){
+    log.info("Into update(UpdateRequest request)");
+    return moneyApplicationService.update(request)
+        .map(s ->responseHandler.getResponse(s, HttpStatus.OK))
+        .onErrorReturn(r -> responseHandler.getAppCustomErrorResponse(r.getMessage())); 
+  }
+  
 
 }

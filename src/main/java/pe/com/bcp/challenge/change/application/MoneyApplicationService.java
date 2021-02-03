@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.reactivex.Single;
 import lombok.extern.slf4j.Slf4j;
 import pe.com.bcp.challenge.change.application.dto.CurrencyDto;
+import pe.com.bcp.challenge.change.application.dto.UpdateRequest;
 import pe.com.bcp.challenge.change.domain.entity.Currency;
 import pe.com.bcp.challenge.change.domain.repository.CurrencyRepository;
 import pe.com.bcp.challenge.common.application.Notification;
@@ -21,7 +22,7 @@ public class MoneyApplicationService {
   private CurrencyRepository currencyRepository;
 
   public Single<Integer> create(CurrencyDto currencyDto) throws Exception {
-    log.info("Into create"); 
+    log.info("Into create");
     return Single.fromCallable(() -> {
       Notification notification = this.createValidation(currencyDto);
       if (notification.hasErrors()) {
@@ -30,7 +31,7 @@ public class MoneyApplicationService {
       Currency currency = new Currency();
       currency.setLabel(currencyDto.getLabel());
       currency.setChageAmount(currencyDto.getAmountChange());
-      return currencyRepository.save(currency); 
+      return currencyRepository.save(currency);
     });
   }
 
@@ -49,6 +50,37 @@ public class MoneyApplicationService {
     Currency currency = currencyRepository.findByLabel(currencyDto.getLabel());
     if (Objects.nonNull(currency)) {
       notification.addError("Currency already registered");
+    }
+
+    return notification;
+  }
+
+  public Single<Integer> update(UpdateRequest request) {
+    return Single.fromCallable(() -> {
+      Notification notification = this.updteValidate(request);
+      if(notification.hasErrors()){
+        throw new IllegalArgumentException(notification.errorMessage());
+      }
+      return null;
+    });
+  }
+
+  private Notification updteValidate(UpdateRequest request) {
+    Notification notification = new Notification();
+    if (Objects.isNull(request.getLabel()) || request.getLabel().length() > 5) {
+      notification.addError("label mal formed");
+    }
+    if (Objects.isNull(request.getNewAmount())
+        || request.getNewAmount().compareTo(new BigDecimal(0)) <= 0) {
+      notification.addError("new amount not supported");
+
+    }
+    Currency currencyDb = null;
+    if (Objects.nonNull(request.getLabel())) {
+      currencyDb = currencyRepository.findByLabel(request.getLabel());
+    }
+    if(Objects.isNull(currencyDb)) {
+      notification.addError("the Currency origin is not find");
     }
 
     return notification;

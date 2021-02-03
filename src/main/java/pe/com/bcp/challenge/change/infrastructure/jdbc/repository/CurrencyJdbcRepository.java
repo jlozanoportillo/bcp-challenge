@@ -55,6 +55,7 @@ public class CurrencyJdbcRepository implements CurrencyRepository {
     return jdbcTemplate.query(sql, new CurrencyMapper());
   }
 
+  @SuppressWarnings("deprecation")
   @Override
   public Currency findByLabel(String label) {
     log.info("Into findByLabel(String label)");
