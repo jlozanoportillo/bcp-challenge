@@ -57,19 +57,48 @@
 		{
 			"name": "change amount",
 			"request": {
-				"method": "GET",
+				"method": "PUT",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"newAmount\":5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "localhost:8080/api/change/PEN/7.221/USD",
+					"raw": "localhost:8081/api/currency/PEN",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "8081",
+					"path": [
+						"api",
+						"currency",
+						"PEN"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cambio de monto entre monedas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/api/change/PEN/2/USD",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
 					"path": [
 						"api",
 						"change",
 						"PEN",
-						"7.221",
+						"2",
 						"USD"
 					]
 				}

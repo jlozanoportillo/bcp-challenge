@@ -55,19 +55,23 @@ public class MoneyApplicationService {
     return notification;
   }
 
-  public Single<Integer> update(UpdateRequest request) {
+  public Single<Integer> update(UpdateRequest request, String labelCurrency) {
     return Single.fromCallable(() -> {
-      Notification notification = this.updteValidate(request);
+      Notification notification = this.updteValidate(request,labelCurrency);
       if(notification.hasErrors()){
         throw new IllegalArgumentException(notification.errorMessage());
       }
-      return null;
+      Currency currency = new Currency();;
+      currency.setChageAmount(request.getNewAmount());
+      currency.setLabel(labelCurrency);      
+      
+      return currencyRepository.update(currency);
     });
   }
 
-  private Notification updteValidate(UpdateRequest request) {
+  private Notification updteValidate(UpdateRequest request,String labelCurrency) {
     Notification notification = new Notification();
-    if (Objects.isNull(request.getLabel()) || request.getLabel().length() > 5) {
+    if (Objects.isNull(labelCurrency) || labelCurrency.length() > 5) {
       notification.addError("label mal formed");
     }
     if (Objects.isNull(request.getNewAmount())
@@ -76,8 +80,8 @@ public class MoneyApplicationService {
 
     }
     Currency currencyDb = null;
-    if (Objects.nonNull(request.getLabel())) {
-      currencyDb = currencyRepository.findByLabel(request.getLabel());
+    if (Objects.nonNull(labelCurrency)) {
+      currencyDb = currencyRepository.findByLabel(labelCurrency);
     }
     if(Objects.isNull(currencyDb)) {
       notification.addError("the Currency origin is not find");

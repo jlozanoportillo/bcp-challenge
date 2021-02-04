@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,9 +56,10 @@ public class MoneyController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = {MediaType.APPLICATION_STREAM_JSON_VALUE,MediaType.APPLICATION_JSON_VALUE}
       )
-  public Single<ResponseEntity<Object>> update(@RequestBody UpdateRequest request){
+  public Single<ResponseEntity<Object>> update(@RequestBody UpdateRequest request, 
+      @PathVariable("labelCurrency")String labelCurrency){
     log.info("Into update(UpdateRequest request)");
-    return moneyApplicationService.update(request)
+    return moneyApplicationService.update(request, labelCurrency)
         .map(s ->responseHandler.getResponse(s, HttpStatus.OK))
         .onErrorReturn(r -> responseHandler.getAppCustomErrorResponse(r.getMessage())); 
   }
